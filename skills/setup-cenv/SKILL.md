@@ -77,8 +77,11 @@ Propose defaults from what you found; don't make the user design it from scratch
    `CLAUDE.md` (personal instructions), `skills/`, `agents/`, `commands/`. Warn that
    anything shared is visible to both accounts' sessions — don't share if work skills or
    instructions contain anything confidential.
-5. **Status line:** install cenv' status line in envs that don't have one? For envs
+5. **Status line:** install cenv's status line in envs that don't have one? For envs
    that already have one, offer the `--badge` mode to prepend instead of replacing.
+6. **Account swapping** (optional): do they want to swap accounts *inside* an env without
+   losing its plugins, MCP servers and history — e.g. keep working in the work env on a
+   personal account when they hit a limit? If yes, set up claude-swap (step 3.7).
 
 ## 3. Install
 
@@ -108,6 +111,10 @@ Propose defaults from what you found; don't make the user design it from scratch
    `theme`, `model`, `editorMode` and `statusLine` into the new env's settings.json. Never
    copy `permissions`, `hooks`, `env`, `enabledPlugins` or MCP config wholesale — those are
    per-env on purpose; set them up fresh in the new env.
+7. Account swapping (if chosen): install claude-swap if `cswap` is missing
+   (`uv tool install claude-swap`, or `pipx install claude-swap`). Registering accounts
+   needs interactive logins, so hand it over in step 5. Never run `cswap run`: it creates
+   a separate environment of its own, which defeats the point.
 
 ## 4. Verify
 
@@ -134,6 +141,14 @@ The login can't be done from here (it is interactive). Tell them, concretely:
 4. Cheat sheet: `cenv` (where am I), `cenv list`, `cenv pin <env>` / `cenv unpin`
    (override for one terminal tab), `cenv run <env>` (launch once in an env),
    `cenv edit` (change rules).
+5. Account swapping (if set up): in a folder of the env, `cswap add` registers the account
+   logged in now; `/login` with the other account in `claude`, then `cswap add` again.
+   After that `cswap switch <email|number>` swaps accounts. Plain `cswap` acts on the
+   current folder's env because it reads `CLAUDE_CONFIG_DIR`; from elsewhere use
+   `cenv exec <env> cswap ...`. Restart sessions after a swap. Plugins, MCP servers and
+   their logins, skills and history stay; claude.ai connectors and org-managed settings
+   change with the account. The status line turns magenta while the account doesn't match
+   the env's `expected-account`.
 
 ## Gotchas to mention when relevant
 
@@ -147,7 +162,6 @@ The login can't be done from here (it is interactive). Tell them, concretely:
   folder. They can't be copied into another env; logging in brings them.
 - **Project `.claude/settings.json` and `.mcp.json` still apply in both envs** — they
   belong to the repo, not the env.
-- **Multiple accounts inside one env** (e.g. switching to a personal account when the
-  company spend cap runs out) is a separate problem; tools like
-  [claude-swap](https://github.com/realiti4/claude-swap) (`cswap`) handle that. With
-  cenv, run it against a specific env via `cenv exec <env> cswap ...`.
+- **Environment vs. account.** cenv picks the environment by folder; claude-swap
+  ([realiti4/claude-swap](https://github.com/realiti4/claude-swap)) swaps the account
+  inside it. They are separate tools that combine without extra wiring.

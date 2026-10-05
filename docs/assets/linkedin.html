@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=block">
+<style>
+  /* Routing diagram: folders (left) -> env panels (right), one terminal strip as proof. */
+  :root {
+    --ink: #07090d; --panel: #0e131b; --panel-2: #121925; --line: #222b38;
+    --fg: #eef2f7; --mid: #a3adbb; --dim: #66717f;
+    --work: #5aa2ff; --work-glow: rgba(90,162,255,.22);
+    --pers: #ffad5c; --pers-glow: rgba(255,173,92,.20);
+    --ok: #3fd07a;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; }
+  body { background: var(--ink); color: var(--fg); font-family: var(--sans); position: relative; overflow: hidden; }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(900px 900px at 50% 35%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(900px 900px at 50% 35%, #000 30%, transparent 80%);
+  }
+  .glow-w { position: absolute; width: 760px; height: 760px; left: 470px; top: 250px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(90,162,255,.16), transparent); }
+  .glow-p { position: absolute; width: 760px; height: 760px; left: 490px; top: 600px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,173,92,.12), transparent); }
+
+  .wrap { position: relative; width: 960px; margin: 0 auto; padding-top: 54px; display: flex; flex-direction: column; gap: 32px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 16px; color: var(--dim); display: flex; gap: 10px; align-items: center; }
+  .eyebrow .pr { color: var(--ok); }
+  .eyebrow b { color: var(--fg); font-weight: 500; }
+  h1 { font-weight: 800; font-size: 66px; line-height: 1.0; letter-spacing: -0.045em; margin-top: 16px; }
+  h1 .w { color: var(--work); } h1 .p { color: var(--pers); }
+  h1 .soft { color: #7d8896; }
+  .sub { margin-top: 20px; font-size: 24px; line-height: 1.45; color: var(--mid); letter-spacing: -0.01em; }
+  .sub b { color: var(--fg); font-weight: 600; }
+  .sub code { font-family: var(--mono); font-size: 21px; color: var(--fg); background: rgba(255,255,255,.07); padding: 1px 7px; border-radius: 6px; }
+
+  .diagram { position: relative; height: 600px; }
+  .diagram svg { position: absolute; inset: 0; overflow: visible; }
+
+  .folder {
+    position: absolute; left: 0; width: 290px; height: 56px;
+    display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    font-family: var(--mono); font-size: 18px; color: var(--fg);
+  }
+  .folder .ic { width: 22px; height: 16px; border-radius: 3px; position: relative; flex: none; }
+  .folder .ic::before { content: ""; position: absolute; left: 0; top: -4px; width: 10px; height: 5px; border-radius: 2px 2px 0 0; background: inherit; }
+  .folder.w .ic { background: var(--work); }
+  .folder.p .ic { background: var(--pers); }
+  .folder .d { color: var(--dim); }
+  .folder.any { border-style: dashed; color: var(--mid); background: transparent; }
+
+  .rule {
+    position: absolute; font-family: var(--mono); font-size: 14px; padding: 4px 10px; border-radius: 6px;
+    background: var(--ink); border: 1px solid var(--line); color: var(--mid); white-space: nowrap;
+  }
+  .rule b { font-weight: 500; }
+  .rule.w b { color: var(--work); } .rule.p b { color: var(--pers); }
+
+  .env {
+    position: absolute; left: 510px; width: 450px;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .env.w { top: 0; border-color: rgba(90,162,255,.45); box-shadow: 0 30px 80px -20px var(--work-glow); }
+  .env.p { top: 312px; border-color: rgba(255,173,92,.42); box-shadow: 0 30px 80px -20px var(--pers-glow); }
+  .env-head { display: flex; justify-content: space-between; align-items: center; }
+  .env-name { font-weight: 700; font-size: 15px; letter-spacing: .16em; }
+  .w .env-name { color: var(--work); } .p .env-name { color: var(--pers); }
+  .env-dir { font-family: var(--mono); font-size: 15px; color: var(--dim); }
+
+  .acct { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.035); border: 1px solid var(--line); }
+  .av { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 18px; color: var(--ink); flex: none; }
+  .w .av { background: var(--work); } .p .av { background: var(--pers); }
+  .acct-txt { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .swap { font-family: var(--mono); font-size: 13px; color: var(--mid); padding: 4px 9px; border-radius: 999px; border: 1px dashed #3a4452; white-space: nowrap; }
+  .acct-mail { font-family: var(--mono); font-size: 18px; color: var(--fg); }
+  .acct-sub { font-size: 14px; color: var(--mid); display: flex; align-items: center; gap: 7px; }
+  .acct-sub i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); display: inline-block; }
+
+  .row { display: grid; grid-template-columns: 78px 1fr; align-items: center; gap: 10px; }
+  .lbl { font-size: 14px; color: var(--dim); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-family: var(--mono); font-size: 14px; padding: 3px 9px; border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--fg); }
+  .hist { font-size: 15px; color: var(--mid); }
+
+  .swaphead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .swaphead h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+  .swaphead h2 span { color: var(--mid); font-weight: 500; }
+  .swaphead small { font-family: var(--mono); font-size: 14px; color: var(--dim); }
+  .tc { color: var(--dim); }
+  .sl .m { color: #e07ad8; }
+  .term {
+    background: #0b0f15; border: 1px solid var(--line); border-radius: 14px; padding: 16px 22px;
+    font-family: var(--mono); font-size: 17px; line-height: 2;
+  }
+  .tl { display: flex; justify-content: space-between; white-space: pre; }
+  .tdir { color: #39c5cf; font-weight: 700; } .tp { color: var(--ok); font-weight: 700; }
+  .sl { color: var(--dim); }
+  .sl .w { color: var(--work); } .sl .p { color: var(--pers); }
+
+  .foot { display: flex; justify-content: space-between; align-items: center; font-size: 17px; color: var(--dim); }
+  .foot .repo { font-family: var(--mono); color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glow-w"></div>
+  <div class="glow-p"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="eyebrow"><span class="pr">❯</span> <b>cenv</b> <span>· open source</span></div>
+      <h1><span class="w">Work</span> Claude.<br><span class="p">Personal</span> Claude.<br><span class="soft">The folder picks.</span></h1>
+      <p class="sub">Every folder maps to its own Claude Code environment: <b>plugins, MCP servers, history</b> and the <b>account</b> it's logged in to. Need another account? Swap it, keep the rest.</p>
+    </header>
+
+    <div class="diagram">
+      <svg width="960" height="600" viewBox="0 0 960 600" aria-hidden="true">
+        <defs>
+          <linearGradient id="gw" x1="0" x2="1"><stop offset="0" stop-color="#5aa2ff" stop-opacity=".25"/><stop offset="1" stop-color="#5aa2ff"/></linearGradient>
+          <linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#ffad5c" stop-opacity=".25"/><stop offset="1" stop-color="#ffad5c"/></linearGradient>
+        </defs>
+        <path d="M290,68 C410,68 400,138 510,138" fill="none" stroke="url(#gw)" stroke-width="2.5"/>
+        <path d="M290,148 C410,148 400,138 510,138" fill="none" stroke="url(#gw)" stroke-width="2.5"/>
+        <path d="M290,378 C410,378 400,452 510,452" fill="none" stroke="url(#gp)" stroke-width="2.5"/>
+        <path d="M290,458 C410,458 400,452 510,452" fill="none" stroke="url(#gp)" stroke-width="2.5"/>
+        <path d="M290,538 C410,538 400,452 510,452" fill="none" stroke="url(#gp)" stroke-width="2.5" stroke-dasharray="5 6"/>
+        <circle cx="510" cy="138" r="5" fill="#5aa2ff"/>
+        <circle cx="510" cy="452" r="5" fill="#ffad5c"/>
+      </svg>
+
+      <div class="folder w" style="top:40px"><span class="ic"></span><span><span class="d">~/work/acme/</span>api</span></div>
+      <div class="folder w" style="top:120px"><span class="ic"></span><span><span class="d">~/work/acme/</span>web</span></div>
+      <div class="rule w" style="left:0; top:196px"><b>rule</b> ~/work/acme  → work</div>
+
+      <div class="folder p" style="top:350px"><span class="ic"></span><span><span class="d">~/</span>side-project</span></div>
+      <div class="folder p" style="top:430px"><span class="ic"></span><span><span class="d">~/</span>notes</span></div>
+      <div class="folder any" style="top:510px"><span class="ic" style="background:#3a4452"></span><span>anywhere else</span></div>
+      <div class="rule p" style="left:0; top:306px"><b>rule</b> *  → personal</div>
+
+      <div class="env w">
+        <div class="env-head"><span class="env-name">WORK ENV</span><span class="env-dir">~/.claude</span></div>
+        <div class="acct">
+          <div class="av">A</div>
+          <div class="acct-txt"><span class="acct-mail">you@acme.com</span><span class="acct-sub"><i></i>logged in · company account</span></div>
+          <span class="swap">⇄ swappable</span>
+        </div>
+        <div class="row"><span class="lbl">plugins</span><div class="chips"><span class="chip">linear</span><span class="chip">datadog</span><span class="chip">deploy</span></div></div>
+        <div class="row"><span class="lbl">MCP</span><div class="chips"><span class="chip">slack</span><span class="chip">figma</span><span class="chip">jira</span></div></div>
+        <div class="row"><span class="lbl">history</span><span class="hist">work sessions only</span></div>
+      </div>
+
+      <div class="env p">
+        <div class="env-head"><span class="env-name">PERSONAL ENV</span><span class="env-dir">~/.claude-personal</span></div>
+        <div class="acct">
+          <div class="av">Y</div>
+          <div class="acct-txt"><span class="acct-mail">you@gmail.com</span><span class="acct-sub"><i></i>logged in · your own account</span></div>
+          <span class="swap">⇄ swappable</span>
+        </div>
+        <div class="row"><span class="lbl">plugins</span><div class="chips"><span class="chip">vercel</span><span class="chip">frontend-design</span></div></div>
+        <div class="row"><span class="lbl">MCP</span><div class="chips"><span class="chip">github</span><span class="chip">neon</span><span class="chip">railway</span></div></div>
+        <div class="row"><span class="lbl">history</span><span class="hist">side projects only</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="swaphead"><h2>Hit a limit? <span>Swap the account, keep the environment.</span></h2><small>via claude-swap</small></div>
+      <div class="term">
+        <div class="tl"><span><span class="tdir">~/work/acme/api</span> <span class="tp">❯</span> claude</span><span class="sl"><span class="w">work</span>·acme.com | api | Opus 5.5</span></div>
+        <div class="tl"><span><span class="tdir">~/work/acme/api</span> <span class="tp">❯</span> cswap switch you@gmail.com</span><span class="tc"># same plugins, MCP, history</span></div>
+        <div class="tl"><span><span class="tdir">~/work/acme/api</span> <span class="tp">❯</span> claude</span><span class="sl"><span class="m">work·gmail.com</span> | api | Opus 5.5</span></div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>zsh / bash · MIT · or tell Claude "set up cenv"</span>
+      <span class="repo">github.com/lukabudik/cenv</span>
+    </div>
+  </div>
+</body>
+</html>

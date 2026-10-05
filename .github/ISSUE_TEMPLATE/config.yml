@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Setup help
+    url: https://github.com/lukabudik/cenv#install
+    about: Easiest route is the plugin. Install it, then tell Claude "set up cenv".

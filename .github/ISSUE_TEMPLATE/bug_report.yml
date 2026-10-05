@@ -1,0 +1,29 @@
+name: Bug report
+description: cenv picked the wrong env, the installer misbehaved, or something else broke
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Your cenv config
+      description: Contents of ~/.config/cenv/config. Replace real emails or paths if you want.
+      render: text
+  - type: textarea
+    id: list
+    attributes:
+      label: Output of `cenv list` and `cenv`
+      render: text
+  - type: input
+    id: env
+    attributes:
+      label: OS, shell and Claude Code version
+      placeholder: macOS 26, zsh 5.9, claude 2.1.289
+    validations:
+      required: true

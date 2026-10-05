@@ -1,6 +1,33 @@
-# cenv
+<p align="center">
+  <img src="docs/assets/hero.png" alt="cenv: work folders get a work Claude Code environment, everything else a personal one, each with its own account, plugins, MCP servers and history" width="100%">
+</p>
 
-**Separate Claude Code environments, picked by the folder you're in.**
+<h1 align="center">cenv</h1>
+
+<p align="center">
+  <b>Separate Claude Code environments, picked by the folder you're in.</b><br>
+  Its own account, plugins, MCP servers and history per environment. Swap the account, keep the rest.
+</p>
+
+<p align="center">
+  <a href="https://github.com/lukabudik/cenv/actions/workflows/test.yml"><img src="https://github.com/lukabudik/cenv/actions/workflows/test.yml/badge.svg" alt="tests"></a>
+  <a href="https://github.com/lukabudik/cenv/releases"><img src="https://img.shields.io/github/v/release/lukabudik/cenv?color=5aa2ff" alt="release"></a>
+  <img src="https://img.shields.io/badge/shell-zsh%20%7C%20bash-ffad5c" alt="zsh | bash">
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-lightgrey" alt="macOS | Linux | WSL">
+  <a href="#option-a-let-claude-code-do-it-recommended"><img src="https://img.shields.io/badge/Claude%20Code-plugin-d97757" alt="Claude Code plugin"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-3fd07a" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#swap-the-account-keep-the-environment">Account swapping</a> ·
+  <a href="#commands">Commands</a> ·
+  <a href="#gotchas">Gotchas</a> ·
+  <a href="docs/desktop-app.md">Desktop app (experimental)</a>
+</p>
+
+---
 
 Work repos get your work login, the company's plugins, MCP servers and connectors.
 Everything else gets your personal login, personal plugins and personal history.
@@ -55,6 +82,36 @@ cenv is a ~200-line zsh/bash hook. On every `cd` it checks your rules and sets
 cd ~/work/acme/api  →  CLAUDE_CONFIG_DIR unset           →  work env
 cd ~/anything-else  →  CLAUDE_CONFIG_DIR=~/.claude-personal  →  personal env
 ```
+
+## Swap the account, keep the environment
+
+cenv separates two things that are easy to mix up:
+
+| | Decides | Picked by |
+|---|---|---|
+| **Environment** | plugins, MCP servers and their logins, skills, settings, history | the folder (cenv) |
+| **Account** | who is logged in and who pays | whatever you log in with, swappable with [claude-swap](https://github.com/realiti4/claude-swap) |
+
+Hit a rate limit or a spend cap? Swap the account and keep working in the same
+environment:
+
+```bash
+uv tool install claude-swap        # or: pipx install claude-swap
+cd ~/work/acme/api
+cswap add                           # register the account that's logged in now
+claude                              # /login with the other account, then:
+cswap add
+cswap switch you@gmail.com          # swap whenever you need to
+```
+
+This works with no extra wiring: cswap reads `CLAUDE_CONFIG_DIR`, so plain `cswap` in a
+work folder acts on the work env. From anywhere else, target an env explicitly with
+`cenv exec work cswap switch 2`. Restart running sessions after a swap.
+
+What stays: plugins, user-scope MCP servers and their OAuth logins, skills, settings,
+history. What changes with the account: claude.ai connectors and org-managed settings.
+The status line turns magenta while an env runs on an account that doesn't match its
+`expected-account`, so you notice.
 
 ## Install
 
@@ -147,13 +204,6 @@ Already have a status line? Prepend `bash ~/.config/cenv/statusline.sh --badge` 
    You can't copy them into another env. Logging in brings them.
 6. **Remove any other `CLAUDE_CONFIG_DIR` exports or `claude` aliases** from your rc
    files. The installer warns if it finds one.
-
-## Related: several accounts in one env
-
-cenv decides *which environment*. To switch *which account* inside an env (e.g. your
-personal account when the company spend cap runs out) use
-[claude-swap](https://github.com/realiti4/claude-swap):
-`cenv exec work cswap switch 2`.
 
 ## Uninstall
 

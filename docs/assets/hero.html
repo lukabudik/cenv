@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=block">
+<style>
+  /* Wide hero / GitHub social preview (1280x640): headline left, env cards right. */
+  :root {
+    --ink: #07090d; --panel: #0e131b; --panel-2: #121925; --line: #222b38;
+    --fg: #eef2f7; --mid: #a3adbb; --dim: #66717f;
+    --work: #5aa2ff; --pers: #ffad5c; --ok: #3fd07a;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; }
+  body { background: var(--ink); color: var(--fg); font-family: var(--sans); position: relative; overflow: hidden; }
+  .grid { position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(800px 600px at 65% 50%, #000 30%, transparent 85%); mask-image: radial-gradient(800px 600px at 65% 50%, #000 30%, transparent 85%); }
+  .gw { position: absolute; width: 640px; height: 640px; left: 700px; top: -120px; border-radius: 50%; background: radial-gradient(closest-side, rgba(90,162,255,.17), transparent); }
+  .gp { position: absolute; width: 640px; height: 640px; left: 720px; top: 220px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,173,92,.13), transparent); }
+
+  .left { position: absolute; left: 72px; top: 72px; width: 590px; display: flex; flex-direction: column; height: 496px; }
+  .eyebrow { font-family: var(--mono); font-size: 18px; color: var(--dim); }
+  .eyebrow .pr { color: var(--ok); } .eyebrow b { color: var(--fg); font-weight: 500; }
+  h1 { font-weight: 800; font-size: 68px; line-height: 1.0; letter-spacing: -0.045em; margin-top: 22px; }
+  h1 .w { color: var(--work); } h1 .p { color: var(--pers); } h1 .soft { color: #7d8896; }
+  .sub { margin-top: 24px; font-size: 22px; line-height: 1.45; color: var(--mid); }
+  .sub b { color: var(--fg); font-weight: 600; }
+  .repo { margin-top: auto; font-family: var(--mono); font-size: 19px; color: var(--fg); }
+  .repo span { color: var(--dim); }
+
+  .right { position: absolute; left: 700px; top: 142px; width: 508px; display: flex; flex-direction: column; gap: 22px; }
+  .env { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .env.w { border-color: rgba(90,162,255,.45); box-shadow: 0 30px 80px -24px rgba(90,162,255,.28); }
+  .env.p { border-color: rgba(255,173,92,.42); box-shadow: 0 30px 80px -24px rgba(255,173,92,.22); }
+  .head { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 15px; }
+  .head .f { color: var(--fg); } .head .f span { color: var(--dim); }
+  .tag { font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: .16em; }
+  .w .tag { color: var(--work); } .p .tag { color: var(--pers); }
+  .acct { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.035); border: 1px solid var(--line); }
+  .av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 16px; color: var(--ink); flex: none; }
+  .w .av { background: var(--work); } .p .av { background: var(--pers); }
+  .mail { font-family: var(--mono); font-size: 17px; flex: 1; }
+  .sw { font-family: var(--mono); font-size: 12px; color: var(--mid); padding: 3px 9px; border-radius: 999px; border: 1px dashed #3a4452; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-family: var(--mono); font-size: 13px; padding: 3px 9px; border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+  .chip.k { color: var(--dim); border-color: transparent; background: transparent; padding-left: 0; }
+</style>
+</head>
+<body>
+  <div class="grid"></div><div class="gw"></div><div class="gp"></div>
+  <div class="left">
+    <div class="eyebrow"><span class="pr">❯</span> <b>cenv</b> · for Claude Code</div>
+    <h1><span class="w">Work</span> Claude.<br><span class="p">Personal</span> Claude.<br><span class="soft">The folder picks.</span></h1>
+    <p class="sub">Each folder gets its own <b>account, plugins, MCP servers and history</b>. Swap the account, keep the rest.</p>
+    <div class="repo"><span>github.com/</span>lukabudik/cenv</div>
+  </div>
+  <div class="right">
+    <div class="env w">
+      <div class="head"><span class="tag">WORK ENV</span><span class="f"><span>~/work/</span>acme/*</span></div>
+      <div class="acct"><div class="av">A</div><span class="mail">you@acme.com</span><span class="sw">⇄ swappable</span></div>
+      <div class="chips"><span class="chip k">mcp</span><span class="chip">slack</span><span class="chip">figma</span><span class="chip">jira</span><span class="chip k">plugins</span><span class="chip">linear</span><span class="chip">datadog</span></div>
+    </div>
+    <div class="env p">
+      <div class="head"><span class="tag">PERSONAL ENV</span><span class="f"><span>everywhere </span>else</span></div>
+      <div class="acct"><div class="av">Y</div><span class="mail">you@gmail.com</span><span class="sw">⇄ swappable</span></div>
+      <div class="chips"><span class="chip k">mcp</span><span class="chip">github</span><span class="chip">neon</span><span class="chip">railway</span><span class="chip k">plugins</span><span class="chip">vercel</span></div>
+    </div>
+  </div>
+</body>
+</html>

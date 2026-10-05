@@ -1,0 +1,37 @@
+name: Desktop app test report
+description: You tried the experimental desktop-app route (docs/desktop-app.md). Thank you!
+labels: [desktop-app]
+body:
+  - type: markdown
+    attributes:
+      value: Steps are in [docs/desktop-app.md](https://github.com/lukabudik/cenv/blob/main/docs/desktop-app.md#how-to-verify-please-report-these). Report whatever you checked, even partial results help.
+  - type: input
+    id: version
+    attributes:
+      label: Claude desktop app version (Claude → About Claude)
+    validations:
+      required: true
+  - type: dropdown
+    id: config
+    attributes:
+      label: Did a Code session in the second copy use the other CLAUDE_CONFIG_DIR?
+      options: ["Yes", "No", "Didn't check"]
+  - type: dropdown
+    id: history
+    attributes:
+      label: Did session history land in the other env's projects/ folder?
+      options: ["Yes", "No", "Didn't check"]
+  - type: dropdown
+    id: mcp
+    attributes:
+      label: Did /mcp and skills show the other env's servers and plugins?
+      options: ["Yes", "No", "Didn't check"]
+  - type: textarea
+    id: account
+    attributes:
+      label: Which account did the Code tab use?
+      description: The second copy's app login, or the env's CLI login? Anything surprising?
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else (updates, both copies running, deep links)
