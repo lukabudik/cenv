@@ -34,7 +34,7 @@ _cenv_dir() {
   local kind a b rest
   [ -r "$CENV_CONFIG" ] || return 1
   while read -r kind a b rest || [ -n "$kind" ]; do
-    [ "$kind" = env ] && [ "$a" = "$1" ] || continue
+    if [ "$kind" != env ] || [ "$a" != "$1" ]; then continue; fi
     _cenv_expand "$b"
     return 0
   done < "$CENV_CONFIG"
@@ -47,7 +47,7 @@ _cenv_expect() {
   REPLY=""
   [ -r "$CENV_CONFIG" ] || return 1
   while read -r kind a b c rest || [ -n "$kind" ]; do
-    [ "$kind" = env ] && [ "$a" = "$1" ] || continue
+    if [ "$kind" != env ] || [ "$a" != "$1" ]; then continue; fi
     REPLY="$c"
     return 0
   done < "$CENV_CONFIG"
@@ -182,7 +182,7 @@ cenv() {
       ;;
     exec)
       # cenv exec <env> <command...> — run any command (e.g. claude mcp add, cswap) against an env
-      [ -n "${1:-}" ] && [ -n "${2:-}" ] || { echo "usage: cenv exec <env> <command...>" >&2; return 1; }
+      if [ -z "${1:-}" ] || [ -z "${2:-}" ]; then echo "usage: cenv exec <env> <command...>" >&2; return 1; fi
       local name="$1"; shift
       ( _cenv_apply "$name" && "$@" )
       ;;
