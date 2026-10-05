@@ -136,7 +136,9 @@ Already have a status line? Prepend `bash ~/.config/cenv/statusline.sh --badge` 
    derived from the raw variable value. The explicit default path looks for a different
    entry and reads as logged out. cenv selects `~/.claude` by *unsetting* the variable.
 2. **Terminal only.** The hook runs in your shell. IDE extensions and the desktop app use
-   the environment they were started with (VS Code's integrated terminal is fine).
+   the environment they were started with (VS Code's integrated terminal is fine). For the
+   desktop app there's an experimental route, one app copy per env:
+   [docs/desktop-app.md](docs/desktop-app.md). Testers wanted.
 3. **Restart sessions after logging in or switching accounts.** The credential is read at
    startup.
 4. **MCP servers and their OAuth are per env.** Add them from a folder of that env, or
