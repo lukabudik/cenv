@@ -73,8 +73,8 @@ printf 'env work ~/.claude @acme.com\nenv personal ~/.claude-personal @example.c
 printf '{"oauthAccount":{"emailAddress":"me@acme.com"}}' > "$tmp/.claude-personal/.claude.json"
 printf '{"oauthAccount":{"emailAddress":"me@acme.com"}}' > "$tmp/.claude.json"
 json='{"workspace":{"current_dir":"/tmp/x"},"model":{"display_name":"Claude Opus"},"context_window":{"remaining_percentage":42.4}}'
-ok_line=$(echo "$json" | env -u CLAUDE_CONFIG_DIR HOME="$tmp" CENV_ACTIVE=work bash "$here/statusline.sh")
-bad_line=$(echo "$json" | HOME="$tmp" CENV_ACTIVE=personal CLAUDE_CONFIG_DIR="$tmp/.claude-personal" bash "$here/statusline.sh")
+ok_line=$(echo "$json" | env -u CLAUDE_CONFIG_DIR -u XDG_CONFIG_HOME -u CENV_CONFIG HOME="$tmp" CENV_ACTIVE=work bash "$here/statusline.sh")
+bad_line=$(echo "$json" | env -u XDG_CONFIG_HOME -u CENV_CONFIG HOME="$tmp" CENV_ACTIVE=personal CLAUDE_CONFIG_DIR="$tmp/.claude-personal" bash "$here/statusline.sh")
 case "$ok_line" in *"work·acme.com"*) case "$ok_line" in *$'\033[35m'*) echo "FAIL statusline: matching account flagged"; fail=1 ;; *) echo "ok   statusline (match)";; esac ;; *) echo "FAIL statusline: $ok_line"; fail=1 ;; esac
 case "$bad_line" in *$'\033[35m'*"personal·acme.com"*) echo "ok   statusline (mismatch is magenta)" ;; *) echo "FAIL statusline mismatch: $bad_line"; fail=1 ;; esac
 rm -rf "$tmp"
