@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "cenv",
+  "description": "Separate Claude Code environments (work, personal, ...) picked automatically by folder",
+  "owner": {
+    "name": "Luka Budik"
+  },
+  "plugins": [
+    {
+      "name": "cenv",
+      "description": "Skill that sets up folder-based Claude Code environments: its own login, settings, plugins, MCP servers and history per env",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/setup-cenv"
+      ],
+      "category": "productivity",
+      "version": "0.1.0",
+      "homepage": "https://github.com/lukabudik/cenv",
+      "license": "MIT"
+    }
+  ]
+}

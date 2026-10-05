@@ -1,0 +1,25 @@
+# cenv config — ~/.config/cenv/config
+#
+# Two kinds of lines. Blank lines and # comments are ignored.
+#
+#   env   <name>  <config-dir>  [expected-account]
+#   rule  <path>  <env>
+#
+# env:   one Claude Code environment = one config directory. Each has its own
+#        settings.json, plugins, MCP servers, skills, history and login.
+#        ~/.claude is Claude Code's default dir; cenv selects it by
+#        leaving CLAUDE_CONFIG_DIR unset (exporting it explicitly breaks the
+#        macOS Keychain lookup).
+#        expected-account is optional: any substring of the email you expect
+#        to be logged in there (e.g. @acme.com). The status line turns magenta
+#        when the logged-in account doesn't match.
+#
+# rule:  a directory and everything below it uses <env>. First match wins,
+#        so put specific paths first and the catch-all `*` last.
+#        Without a matching rule, Claude Code's default (~/.claude) is used.
+
+env   work      ~/.claude            @acme.com
+env   personal  ~/.claude-personal
+
+rule  ~/work/acme   work
+rule  *             personal
